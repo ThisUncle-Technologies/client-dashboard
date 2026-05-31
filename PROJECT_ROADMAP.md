@@ -13,6 +13,31 @@ Recommended baseline architecture:
 - Analytics: Umami.
 - Website integration: static sites remain independent and fetch published content dynamically through a safe public read layer.
 
+## V1 Scope
+
+V1 is the first production-ready release of the reusable ThisUncle client dashboard. It includes:
+
+- Multi-client authentication and access control.
+- Role-aware dashboard shell for `admin` and `client` users.
+- Supabase-backed client, site, and assignment management.
+- Secure media upload and library management through Cloudinary.
+- Gallery and portfolio management for assigned sites.
+- Public website content delivery for one approved pilot site.
+- Site-level analytics surfaced in the dashboard through a server-side integration.
+- Netlify deployment, preview/staging validation, and production hardening.
+
+## Explicitly Excluded From V1
+
+These items are intentionally out of scope for V1 and should be planned separately if needed later:
+
+- Public signup or self-service account creation.
+- A full universal page builder.
+- Multi-language content management.
+- A custom analytics warehouse or custom tracking platform.
+- Scheduled publishing/workflow automation beyond the core dashboard flow.
+- Website hosting or deployment automation for every client site.
+- Full CMS feature families such as blog/news, team members, services, and advanced SEO tooling.
+
 This roadmap is intentionally phased. Each phase has a clear stopping point so implementation stays controlled and avoids overengineering.
 
 ---
@@ -179,7 +204,7 @@ The `src`, `supabase`, `netlify`, and `public` folders should not be created unt
 ### Deployment Strategy
 
 - Dashboard frontend hosted on Netlify.
-- Supabase production project created before Phase 3.
+- Supabase production project created before Phase 2.
 - Cloudinary account/folder structure created before Phase 6.
 - Umami site IDs configured before Phase 9.
 - Production subdomain candidate: `dashboard.thisuncle.co.tz`.
@@ -218,6 +243,8 @@ The `src`, `supabase`, `netlify`, and `public` folders should not be created unt
 - Data model draft is approved.
 - Security model is approved.
 - Deployment target is approved.
+- First pilot site decision is approved.
+- Public content contract is approved for the pilot integration.
 - No app features are implemented.
 
 ### Stopping Point Before Next Phase
@@ -226,102 +253,27 @@ Stop after planning approval. Do not scaffold React until the architecture and s
 
 ---
 
-## Phase 2: Frontend Shell
+## Phase 2: Supabase Database Foundation
 
 ### Goal
 
-Build the visual dashboard foundation only.
+Design and create the database and RLS foundation.
 
 ### What Will Be Built
 
-- React/Vite app setup.
-- Tailwind setup.
-- Base routing.
-- Dashboard layout.
-- Sidebar.
-- Topbar.
-- Placeholder pages.
-- Responsive structure.
-- ThisUncle branding.
-- Empty states and placeholder navigation.
+- Supabase migrations.
+- Seed data.
+- Row-level security policies.
+- Core tenant tables and relationships.
 
 ### What Will Not Be Built Yet
 
-- No real Supabase connection.
+- No frontend shell.
 - No login/auth logic.
-- No CRUD features.
+- No CRUD UI.
 - No media uploads.
-- No analytics data.
-- No public API.
-
-### Likely Placeholder Pages
-
-- Dashboard Overview
-- Clients
-- Sites
-- Media Library
-- Galleries
-- Analytics
-- Settings
-
-### Files/Folders Likely Involved
-
-```txt
-package.json
-vite.config.ts
-tailwind.config.ts
-postcss.config.js
-index.html
-src/main.tsx
-src/app/App.tsx
-src/app/router.tsx
-src/styles/index.css
-src/components/layout/AppLayout.tsx
-src/components/layout/Sidebar.tsx
-src/components/layout/Topbar.tsx
-src/routes/*.tsx
-```
-
-### Dependencies
-
-- Node/npm available locally.
-- React, Vite, Tailwind.
-- Routing library, likely `react-router-dom`.
-- Icon library, likely `lucide-react`.
-
-### Testing Checklist
-
-- App installs cleanly.
-- App runs locally.
-- App builds successfully.
-- Routes navigate correctly.
-- Sidebar/topbar work on desktop.
-- Mobile navigation works.
-- No backend calls are made.
-
-### Acceptance Criteria
-
-- `npm run dev` serves the dashboard shell.
-- `npm run build` succeeds.
-- All placeholder pages are reachable.
-- Layout is responsive.
-- Visual direction matches ThisUncle brand.
-
-### Stopping Point Before Next Phase
-
-Stop when the static frontend shell is usable and reviewed. Do not connect Supabase yet.
-
----
-
-## Phase 3: Supabase Database Schema
-
-### Goal
-
-Design and create the database foundation.
-
-### What Will Be Built
-
-Supabase migrations, seed data, and RLS policies.
+- No analytics UI.
+- No public website integration.
 
 ### Tables To Include
 
@@ -343,16 +295,9 @@ Possible later tables:
 - `team_members`
 - `service_items`
 
-### What Will Not Be Built Yet
-
-- No full admin UI for managing records.
-- No media upload UI.
-- No public website integration.
-- No analytics UI.
-
 ### Access Model
 
-- Admin can read/write all rows.
+- Admin can read and write all rows.
 - Client users can read assigned client/site records.
 - Client users can write only allowed records for assigned sites.
 - Public read access should only expose published content through controlled views or API endpoints.
@@ -378,13 +323,14 @@ src/lib/supabase.ts
 - Seed data loads.
 - RLS blocks unauthorized rows.
 - Admin can access all rows.
-- Client can access only assigned rows.
+- Client A cannot read, insert, update, or delete Client B rows through direct queries.
+- Anonymous access is denied to tenant-scoped tables.
 - Public users cannot access private dashboard tables.
 
 ### Acceptance Criteria
 
 - Core tables exist.
-- RLS policies are enabled and tested.
+- RLS policies are enabled and verified with negative cross-access tests.
 - Seed admin/client/site data exists.
 - Data model supports multi-client and multi-site access.
 
@@ -394,7 +340,7 @@ Stop when schema and RLS are verified. Do not build auth UI until access rules a
 
 ---
 
-## Phase 4: Authentication and Access Control
+## Phase 3: Authentication and Access Control
 
 ### Goal
 
@@ -433,7 +379,7 @@ src/lib/permissions.ts
 
 ### Dependencies
 
-- Phase 3 schema and RLS.
+- Phase 2 schema and RLS.
 - Supabase Auth configuration.
 - Email templates/domain decision if using invite/password reset emails.
 
@@ -446,6 +392,7 @@ src/lib/permissions.ts
 - Client cannot access admin-only routes.
 - Client cannot access unassigned site data.
 - Public signup is disabled or unavailable.
+- Admin-created account or invite flow can create a usable client login.
 
 ### Acceptance Criteria
 
@@ -453,10 +400,91 @@ src/lib/permissions.ts
 - Role-based route protection works.
 - Client users only see assigned sites.
 - Admin users can see all sites.
+- Public signup remains disabled.
+- Admin-created client account provisioning is verified.
 
 ### Stopping Point Before Next Phase
 
 Stop when login and permissions are reliable. Do not add client/site management until access control is stable.
+
+---
+
+## Phase 4: Frontend Shell and Role-Based Routing
+
+### Goal
+
+Build the visual dashboard foundation around authenticated access.
+
+### What Will Be Built
+
+- React/Vite app setup.
+- Tailwind setup.
+- Base routing.
+- Dashboard layout.
+- Sidebar.
+- Topbar.
+- Placeholder pages.
+- Responsive structure.
+- ThisUncle branding.
+- Role-aware navigation and route guards.
+- Empty states and placeholder navigation.
+
+### What Will Not Be Built Yet
+
+- No CRUD features.
+- No media uploads.
+- No analytics data.
+- No public API.
+
+### Files/Folders Likely Involved
+
+```txt
+package.json
+vite.config.ts
+tailwind.config.ts
+postcss.config.js
+index.html
+src/main.tsx
+src/app/App.tsx
+src/app/router.tsx
+src/styles/index.css
+src/components/layout/AppLayout.tsx
+src/components/layout/Sidebar.tsx
+src/components/layout/Topbar.tsx
+src/routes/*.tsx
+```
+
+### Dependencies
+
+- Phase 3 auth and role data.
+- Node/npm available locally.
+- React, Vite, Tailwind.
+- Routing library, likely `react-router-dom`.
+- Icon library, likely `lucide-react`.
+
+### Testing Checklist
+
+- App installs cleanly.
+- App runs locally.
+- App builds successfully.
+- Routes navigate correctly.
+- Role-aware routing sends admin and client users to the correct landing pages.
+- Sidebar/topbar work on desktop.
+- Mobile navigation works.
+- No backend CRUD calls are made.
+
+### Acceptance Criteria
+
+- `npm run dev` serves the dashboard shell.
+- `npm run build` succeeds.
+- All placeholder pages are reachable.
+- Layout is responsive.
+- Visual direction matches ThisUncle brand.
+- Route guards respect user role and assignment state.
+
+### Stopping Point Before Next Phase
+
+Stop when the static frontend shell is usable and reviewed. Do not add management features yet.
 
 ---
 
@@ -582,12 +610,17 @@ src/lib/cloudinary.ts
 - Edit metadata.
 - Archive/delete media.
 - Client cannot see another client's media.
+- Signed upload requests are rejected when the site/client context does not match the authenticated user.
+- Tampered folder, site, or signature parameters are rejected.
+- Expired or unsigned upload attempts are rejected.
 - Invalid file types are rejected.
 - Oversized files are handled cleanly.
 
 ### Acceptance Criteria
 
 - Media can be uploaded securely.
+- Upload signing is validated server-side against the authenticated user and assigned site.
+- Cloudinary folder/tenant scoping is enforced.
 - Media records are tied to the correct site.
 - Client access is isolated.
 - Cloudinary secrets are not exposed in browser code.
@@ -730,6 +763,7 @@ Pilot website files may be touched only in the selected pilot site, after explic
 - Only published content appears.
 - Client update appears without rebuild.
 - API does not expose private draft/media records.
+- Response schema includes an explicit version and the documented required fields.
 - Works on mobile and desktop.
 
 ### Acceptance Criteria
@@ -737,6 +771,7 @@ Pilot website files may be touched only in the selected pilot site, after explic
 - One pilot site successfully consumes dashboard content.
 - Static fallback remains intact.
 - No full website rewrite is required.
+- Public responses use a versioned schema contract that is documented and stable for V1 consumers.
 
 ### Stopping Point Before Next Phase
 
@@ -799,6 +834,8 @@ src/lib/analytics.ts
 
 - Admin sees analytics for all sites.
 - Client sees analytics only for assigned sites.
+- Client cannot change a site ID or other request parameter to query another site's analytics.
+- Analytics endpoint rejects requests before calling the provider when site assignment is invalid.
 - Date filter changes results.
 - Empty/new sites show useful empty state.
 - API errors show recoverable UI.
@@ -808,6 +845,7 @@ src/lib/analytics.ts
 
 - Dashboard displays usable traffic summaries per site.
 - Access control matches site assignments.
+- Analytics requests are validated server-side before any provider query is made.
 - Analytics fetches are cached or rate-limit aware.
 
 ### Stopping Point Before Next Phase
@@ -857,12 +895,15 @@ docs/environment.md
 ### Testing Checklist
 
 - Production build succeeds.
+- Preview and staging deployments pass smoke checks before production promotion.
+- Preview/staging env vars are present and wired correctly.
 - Netlify env vars are present.
 - Login works in production.
 - Supabase RLS works in production.
 - Cloudinary upload works in production.
 - Analytics fetch works in production.
 - Pilot website integration works against production.
+- Pilot website integration also works against staging/preview deployments.
 
 ### Acceptance Criteria
 
@@ -870,6 +911,7 @@ docs/environment.md
 - Admin and client logins work.
 - Core features survive refresh and deployment.
 - No secrets are exposed in frontend bundle.
+- Staging/preview validation is part of the release process.
 
 ### Stopping Point Before Next Phase
 
@@ -922,6 +964,7 @@ docs/backup-export.md
 
 ### Testing Checklist
 
+- Security regression checklist is repeatable in staging/preview and passes before release.
 - Admin cannot accidentally expose private draft content.
 - Client cannot access another client's records.
 - Upload limits are enforced.
@@ -937,6 +980,7 @@ docs/backup-export.md
 - Known risks are documented.
 - Recovery/backup notes exist.
 - Access control is verified end to end.
+- Security regression testing is repeatable and documented.
 
 ### Stopping Point Before Next Phase
 
@@ -1016,15 +1060,17 @@ Each future feature should have its own scoped implementation plan before code c
 
 1. Approve this roadmap.
 2. Complete Phase 1 planning documents.
-3. Build Phase 2 frontend shell.
-4. Build Phase 3 Supabase schema and RLS.
-5. Add Phase 4 authentication.
+3. Build Phase 2 Supabase database foundation.
+4. Add Phase 3 authentication and access control.
+5. Build Phase 4 frontend shell and role-based routing.
 6. Add Phase 5 client/site management.
 7. Add Phase 6 media library.
 8. Add Phase 7 gallery/portfolio manager.
 9. Prove Phase 8 with one pilot website.
 10. Add Phase 9 analytics.
-11. Deploy and harden.
+11. Complete Phase 10 deployment and production setup.
+12. Complete Phase 11 hardening and QA.
+13. Plan Phase 12 future CMS features separately.
 
 ## Current Repository State
 
