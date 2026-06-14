@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { ClientsPage } from './pages/ClientsPage'
 import { SitesPage } from './pages/SitesPage'
+import { MediaPage } from './pages/MediaPage'
 import { UsersPage } from './pages/UsersPage'
 import './index.css'
 
@@ -33,7 +34,7 @@ function App() {
           />
           <Route
             path="/media"
-            element={<ProtectedRoute><PlaceholderPage title="Media" /></ProtectedRoute>}
+            element={<ProtectedRoute><MediaPage /></ProtectedRoute>}
           />
           <Route
             path="/analytics"
