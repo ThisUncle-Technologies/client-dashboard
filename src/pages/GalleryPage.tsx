@@ -42,7 +42,7 @@ function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
-const emptySection = { title: '', slug: '', description: '', layout_type: 'grid', status: 'draft' as const }
+const emptySection = { title: '', slug: '', description: '', layout_type: 'grid', status: 'draft' as 'published' | 'draft' }
 
 export function GalleryPage() {
   const { profile } = useAuth()
