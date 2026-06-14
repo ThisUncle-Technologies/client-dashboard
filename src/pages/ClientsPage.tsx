@@ -55,6 +55,8 @@ export function ClientsPage() {
   const [credentials, setCredentials] = useState<CreatedCredentials | null>(null)
   const [copiedEmail, setCopiedEmail] = useState(false)
   const [copiedPassword, setCopiedPassword] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<Client | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   async function fetchClients() {
     setLoading(true)
@@ -102,6 +104,15 @@ export function ClientsPage() {
     await navigator.clipboard.writeText(value)
     if (type === 'email') { setCopiedEmail(true); setTimeout(() => setCopiedEmail(false), 2000) }
     else { setCopiedPassword(true); setTimeout(() => setCopiedPassword(false), 2000) }
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return
+    setDeleting(true)
+    await supabase.from('clients').delete().eq('id', deleteTarget.id)
+    setDeleteTarget(null)
+    setDeleting(false)
+    fetchClients()
   }
 
   async function handleSave() {
@@ -213,12 +224,20 @@ export function ClientsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => openEdit(client)}
-                      className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
-                    >
-                      Edit
-                    </button>
+                    <div className="flex items-center justify-end gap-3">
+                      <button
+                        onClick={() => openEdit(client)}
+                        className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setDeleteTarget(client)}
+                        className="text-xs text-red-400 hover:text-red-600 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -383,6 +402,36 @@ export function ClientsPage() {
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
+            <h2 className="text-base font-semibold text-gray-900 mb-2">Delete client?</h2>
+            <p className="text-sm text-gray-500 mb-1">
+              This will permanently delete <span className="font-medium text-gray-900">{deleteTarget.name}</span> and all their associated sites and gallery data.
+            </p>
+            <p className="text-sm text-amber-600 bg-amber-50 px-3 py-2 rounded-md mb-6 mt-3">
+              The login account for {deleteTarget.contact_email} will not be deleted automatically. Remove it from Users if needed.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="flex-1 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-50 transition-colors"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
           </div>
         </div>
       )}
