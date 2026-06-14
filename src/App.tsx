@@ -8,6 +8,7 @@ import { ClientsPage } from './pages/ClientsPage'
 import { SitesPage } from './pages/SitesPage'
 import { MediaPage } from './pages/MediaPage'
 import { UsersPage } from './pages/UsersPage'
+import { GalleryPage } from './pages/GalleryPage'
 import './index.css'
 
 function App() {
@@ -35,6 +36,10 @@ function App() {
           <Route
             path="/media"
             element={<ProtectedRoute><MediaPage /></ProtectedRoute>}
+          />
+          <Route
+            path="/gallery"
+            element={<ProtectedRoute><GalleryPage /></ProtectedRoute>}
           />
           <Route
             path="/analytics"
