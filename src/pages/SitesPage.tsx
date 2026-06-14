@@ -164,7 +164,7 @@ export function SitesPage() {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Site</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Client</th>
+                {isAdmin && <th className="text-left px-4 py-3 font-medium text-gray-500">Client</th>}
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Domain</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Type</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
@@ -178,7 +178,7 @@ export function SitesPage() {
                     <p className="font-medium text-gray-900">{site.name}</p>
                     <p className="text-xs text-gray-400 font-mono">{site.slug}</p>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{site.clients?.name || '—'}</td>
+                  {isAdmin && <td className="px-4 py-3 text-gray-500">{site.clients?.name || '—'}</td>}
                   <td className="px-4 py-3 text-gray-500">
                     {site.domain
                       ? <a href={`https://${site.domain}`} target="_blank" rel="noreferrer" className="hover:text-gray-900 transition-colors">{site.domain}</a>
