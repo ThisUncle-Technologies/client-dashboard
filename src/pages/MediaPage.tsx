@@ -112,13 +112,17 @@ export function MediaPage() {
 
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <select
-          value={selectedSite}
-          onChange={e => setSelectedSite(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:border-gray-900 transition-colors"
-        >
-          {sites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
+        {sites.length > 1 ? (
+          <select
+            value={selectedSite}
+            onChange={e => setSelectedSite(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:border-gray-900 transition-colors"
+          >
+            {sites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        ) : sites.length === 1 ? (
+          <span className="text-sm font-medium text-gray-700">{sites[0].name}</span>
+        ) : null}
 
         <div className="flex items-center gap-2 ml-auto">
           {uploading && (
@@ -211,14 +215,12 @@ export function MediaPage() {
                 >
                   Copy URL
                 </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => handleArchive(preview)}
-                    className="px-4 py-2 border border-red-200 rounded-md text-sm text-red-500 hover:bg-red-50 transition-colors"
-                  >
-                    Remove
-                  </button>
-                )}
+                <button
+                  onClick={() => handleArchive(preview)}
+                  className="px-4 py-2 border border-red-200 rounded-md text-sm text-red-500 hover:bg-red-50 transition-colors"
+                >
+                  Remove
+                </button>
                 <button
                   onClick={() => setPreview(null)}
                   className="px-4 py-2 bg-gray-900 text-white rounded-md text-sm hover:bg-gray-700 transition-colors"
