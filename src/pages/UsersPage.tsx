@@ -56,6 +56,9 @@ export function UsersPage() {
   const [creating, setCreating] = useState(false)
   const [copied, setCopied] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [createdUser, setCreatedUser] = useState<{ full_name: string; email: string; password: string } | null>(null)
+  const [copiedEmail, setCopiedEmail] = useState(false)
+  const [copiedPassword, setCopiedPassword] = useState(false)
 
   async function fetchProfiles() {
     setLoading(true)
@@ -93,6 +96,7 @@ export function UsersPage() {
     setCreateError(null)
     setCopied(false)
     setShowPassword(false)
+    setCreatedUser(null)
     setCreateOpen(true)
   }
 
@@ -127,10 +131,20 @@ export function UsersPage() {
     if (!res.ok) {
       setCreateError(json.error || 'Failed to create user.')
     } else {
-      setCreateOpen(false)
+      setCreatedUser({
+        full_name: createForm.full_name,
+        email: createForm.email,
+        password: createForm.password,
+      })
       fetchProfiles()
     }
     setCreating(false)
+  }
+
+  async function copyField(value: string, type: 'email' | 'password') {
+    await navigator.clipboard.writeText(value)
+    if (type === 'email') { setCopiedEmail(true); setTimeout(() => setCopiedEmail(false), 2000) }
+    else { setCopiedPassword(true); setTimeout(() => setCopiedPassword(false), 2000) }
   }
 
   async function openPanel(profile: Profile) {
@@ -215,6 +229,68 @@ export function UsersPage() {
       {createOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+
+          {/* Confirmation screen */}
+          {createdUser ? (
+            <>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-gray-900">User created</h2>
+                  <p className="text-xs text-gray-400">Copy the credentials below before closing.</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                <div className="px-4 py-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-400 mb-1">Full name</p>
+                  <p className="text-sm font-medium text-gray-900">{createdUser.full_name}</p>
+                </div>
+
+                <div className="px-4 py-3 bg-gray-50 rounded-lg flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs text-gray-400 mb-1">Email</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">{createdUser.email}</p>
+                  </div>
+                  <button onClick={() => copyField(createdUser.email, 'email')} className="shrink-0 text-gray-400 hover:text-gray-900 transition-colors">
+                    {copiedEmail
+                      ? <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      : <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    }
+                  </button>
+                </div>
+
+                <div className="px-4 py-3 bg-gray-50 rounded-lg flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-xs text-gray-400 mb-1">Password</p>
+                    <p className="text-sm font-mono font-medium text-gray-900 truncate">{createdUser.password}</p>
+                  </div>
+                  <button onClick={() => copyField(createdUser.password, 'password')} className="shrink-0 text-gray-400 hover:text-gray-900 transition-colors">
+                    {copiedPassword
+                      ? <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      : <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 002 2z" /></svg>
+                    }
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-md mb-4">
+                This password cannot be retrieved after you close this window.
+              </p>
+
+              <button
+                onClick={() => setCreateOpen(false)}
+                className="w-full py-2 bg-gray-900 text-white rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
+              >
+                Done
+              </button>
+            </>
+          ) : (
+            <>
             <h2 className="text-base font-semibold text-gray-900 mb-5">New user</h2>
 
             <div className="space-y-4">
@@ -301,6 +377,8 @@ export function UsersPage() {
                 {creating ? 'Creating...' : 'Create user'}
               </button>
             </div>
+            </>
+          )}
           </div>
         </div>
       )}
