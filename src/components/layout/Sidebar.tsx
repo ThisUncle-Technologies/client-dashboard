@@ -85,8 +85,10 @@ export function Sidebar() {
 
       {/* Brand */}
       <div className="px-5 py-5 border-b border-gray-100 dark:border-gray-800">
-        <p className="text-[10px] tracking-widest uppercase text-gray-400 dark:text-gray-500">ThisUncle</p>
-        <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">Client Dashboard</p>
+        <p className="text-[10px] tracking-widest uppercase text-gray-400 dark:text-gray-500">
+          {isAdmin ? 'ThisUncle' : profile?.full_name || '—'}
+        </p>
+        <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">Dashboard</p>
       </div>
 
       {/* Nav */}
