@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { ClientsPage } from './pages/ClientsPage'
 import { SitesPage } from './pages/SitesPage'
+import { UsersPage } from './pages/UsersPage'
 import './index.css'
 
 function App() {
@@ -17,6 +18,10 @@ function App() {
           <Route
             path="/dashboard"
             element={<ProtectedRoute><DashboardPage /></ProtectedRoute>}
+          />
+          <Route
+            path="/users"
+            element={<ProtectedRoute requireAdmin><UsersPage /></ProtectedRoute>}
           />
           <Route
             path="/clients"
