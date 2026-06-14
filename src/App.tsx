@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
+import { PlaceholderPage } from './pages/PlaceholderPage'
 import './index.css'
 
 function App() {
@@ -13,11 +14,23 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
+            element={<ProtectedRoute><DashboardPage /></ProtectedRoute>}
+          />
+          <Route
+            path="/clients"
+            element={<ProtectedRoute requireAdmin><PlaceholderPage title="Clients" /></ProtectedRoute>}
+          />
+          <Route
+            path="/sites"
+            element={<ProtectedRoute><PlaceholderPage title="Sites" /></ProtectedRoute>}
+          />
+          <Route
+            path="/media"
+            element={<ProtectedRoute><PlaceholderPage title="Media" /></ProtectedRoute>}
+          />
+          <Route
+            path="/analytics"
+            element={<ProtectedRoute><PlaceholderPage title="Analytics" /></ProtectedRoute>}
           />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
