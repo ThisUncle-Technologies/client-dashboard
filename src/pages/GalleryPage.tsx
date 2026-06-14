@@ -207,18 +207,26 @@ export function GalleryPage() {
     <AppLayout title="Gallery">
 
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-3 mb-6">
-        <select
-          value={selectedSite}
-          onChange={e => setSelectedSite(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:border-gray-900 transition-colors"
-        >
-          {sites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {sites.map(s => (
+            <button
+              key={s.id}
+              onClick={() => setSelectedSite(s.id)}
+              className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+                selectedSite === s.id
+                  ? 'bg-gray-900 text-white border-gray-900'
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-900'
+              }`}
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
         <button
           onClick={openCreate}
           disabled={!selectedSite}
-          className="ml-auto px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-700 disabled:opacity-50 transition-colors"
+          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-700 disabled:opacity-50 transition-colors"
         >
           + New Section
         </button>
@@ -237,40 +245,51 @@ export function GalleryPage() {
               <button onClick={openCreate} className="text-sm text-gray-900 underline">Create one</button>
             </div>
           ) : (
-            <ul className="space-y-1">
-              {sections.map(s => (
-                <li key={s.id}>
-                  <button
-                    onClick={() => setActiveSection(s)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg border transition-colors ${
-                      activeSection?.id === s.id
-                        ? 'border-gray-900 bg-gray-900 text-white'
-                        : 'border-gray-100 bg-white hover:border-gray-200 text-gray-700'
-                    }`}
-                  >
-                    <p className="text-sm font-medium truncate">{s.title}</p>
-                    <p className={`text-xs mt-0.5 ${activeSection?.id === s.id ? 'text-gray-300' : 'text-gray-400'}`}>
-                      {s.layout_type} · <span className={s.status === 'published' ? 'text-green-500' : ''}>{s.status}</span>
-                    </p>
-                  </button>
-                  <div className="flex gap-2 px-1 mt-0.5">
+            <ul className="space-y-1.5">
+              {sections.map(s => {
+                const isActive = activeSection?.id === s.id
+                return (
+                  <li key={s.id} className="group relative">
                     <button
-                      onClick={() => openEdit(s)}
-                      className="text-xs text-gray-400 hover:text-gray-700 transition-colors"
+                      onClick={() => setActiveSection(s)}
+                      className={`w-full text-left px-3 py-2.5 pr-16 rounded-lg border transition-colors ${
+                        isActive
+                          ? 'border-gray-900 bg-gray-900 text-white'
+                          : 'border-gray-100 bg-white hover:border-gray-200 text-gray-700'
+                      }`}
                     >
-                      Edit
+                      <p className="text-sm font-medium truncate">{s.title}</p>
+                      <p className={`text-xs mt-0.5 ${isActive ? 'text-gray-300' : 'text-gray-400'}`}>
+                        {s.layout_type} · <span className={s.status === 'published' && !isActive ? 'text-green-500' : ''}>{s.status}</span>
+                      </p>
                     </button>
-                    {isAdmin && (
+
+                    {/* Action icons — inside card, top-right, visible on hover */}
+                    <div className="absolute top-1/2 -translate-y-1/2 right-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
-                        onClick={() => setDeleteTarget(s)}
-                        className="text-xs text-red-400 hover:text-red-600 transition-colors"
+                        onClick={e => { e.stopPropagation(); openEdit(s) }}
+                        title="Edit"
+                        className={`p-1.5 rounded-md transition-colors ${isActive ? 'text-gray-300 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-100'}`}
                       >
-                        Delete
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H8v-2.414a2 2 0 01.586-1.414z" />
+                        </svg>
                       </button>
-                    )}
-                  </div>
-                </li>
-              ))}
+                      {isAdmin && (
+                        <button
+                          onClick={e => { e.stopPropagation(); setDeleteTarget(s) }}
+                          title="Delete"
+                          className={`p-1.5 rounded-md transition-colors ${isActive ? 'text-red-300 hover:text-red-200 hover:bg-white/10' : 'text-red-400 hover:text-red-600 hover:bg-red-50'}`}
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0a1 1 0 011-1h4a1 1 0 011 1m-7 0H5m14 0h-2" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           )}
         </div>
