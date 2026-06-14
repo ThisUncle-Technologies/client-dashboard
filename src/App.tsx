@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { ClientsPage } from './pages/ClientsPage'
 import './index.css'
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
           />
           <Route
             path="/clients"
-            element={<ProtectedRoute requireAdmin><PlaceholderPage title="Clients" /></ProtectedRoute>}
+            element={<ProtectedRoute requireAdmin><ClientsPage /></ProtectedRoute>}
           />
           <Route
             path="/sites"
