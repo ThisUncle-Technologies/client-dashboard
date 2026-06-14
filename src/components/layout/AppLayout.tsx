@@ -13,7 +13,7 @@ export function AppLayout({ title, children }: AppLayoutProps) {
   const [tourTrigger, setTourTrigger] = useState(0)
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden">
       <Sidebar />
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <Topbar title={title} />
@@ -26,7 +26,7 @@ export function AppLayout({ title, children }: AppLayoutProps) {
       <button
         onClick={() => setTourTrigger(t => t + 1)}
         title="Show walkthrough"
-        className="fixed bottom-6 right-6 z-[199] w-10 h-10 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-700 transition-colors flex items-center justify-center text-base font-semibold"
+        className="fixed bottom-6 right-6 z-[199] w-10 h-10 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full shadow-lg hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors flex items-center justify-center text-base font-semibold"
       >
         ?
       </button>

@@ -111,21 +111,21 @@ export function MediaPage() {
           <select
             value={selectedSite}
             onChange={e => setSelectedSite(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:border-gray-900 transition-colors"
+            className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-gray-900 dark:focus:border-gray-400 transition-colors"
           >
             {sites.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
         ) : sites.length === 1 ? (
-          <span className="text-sm font-medium text-gray-700">{sites[0].name}</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{sites[0].name}</span>
         ) : null}
 
         <div className="flex items-center gap-2 ml-auto">
           {uploading && (
             <div className="flex items-center gap-2">
-              <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-gray-900 transition-all" style={{ width: `${uploadProgress}%` }} />
+              <div className="w-32 h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div className="h-full bg-gray-900 dark:bg-white transition-all" style={{ width: `${uploadProgress}%` }} />
               </div>
-              <span className="text-xs text-gray-400">{uploadProgress}%</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{uploadProgress}%</span>
             </div>
           )}
           <input
@@ -138,7 +138,7 @@ export function MediaPage() {
           <button
             onClick={() => fileRef.current?.click()}
             disabled={uploading || !selectedSite}
-            className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-700 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-md hover:bg-gray-700 dark:hover:bg-gray-100 disabled:opacity-50 transition-colors"
           >
             {uploading ? 'Uploading...' : '+ Upload'}
           </button>
@@ -149,14 +149,14 @@ export function MediaPage() {
 
       {/* Grid */}
       {loading ? (
-        <p className="text-sm text-gray-400">Loading...</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">Loading...</p>
       ) : assets.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 border border-dashed border-gray-200 rounded-lg gap-3">
-          <p className="text-sm text-gray-400">No media yet.</p>
+        <div className="flex flex-col items-center justify-center h-64 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg gap-3">
+          <p className="text-sm text-gray-400 dark:text-gray-500">No media yet.</p>
           <button
             onClick={() => fileRef.current?.click()}
             disabled={!selectedSite}
-            className="text-sm text-gray-900 underline"
+            className="text-sm text-gray-900 dark:text-white underline"
           >
             Upload your first file
           </button>
@@ -167,7 +167,7 @@ export function MediaPage() {
             <button
               key={asset.id}
               onClick={() => setPreview(asset)}
-              className="group relative aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-100 hover:border-gray-300 transition-colors"
+              className="group relative aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500 transition-colors"
             >
               {asset.type === 'image' ? (
                 <img src={asset.url} alt={asset.alt_text || asset.title || ''} className="w-full h-full object-cover" />
@@ -187,9 +187,8 @@ export function MediaPage() {
       {/* Preview panel */}
       {preview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setPreview(null)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-lg mx-4 overflow-hidden" onClick={e => e.stopPropagation()}>
 
-            {/* Media preview */}
             <div className="bg-gray-900 flex items-center justify-center" style={{ maxHeight: '60vh' }}>
               {preview.type === 'image' ? (
                 <img src={preview.url} alt={preview.alt_text || ''} className="max-w-full max-h-96 object-contain" />
@@ -198,27 +197,26 @@ export function MediaPage() {
               )}
             </div>
 
-            {/* Details */}
             <div className="p-5">
-              <p className="text-sm font-medium text-gray-900 mb-1">{preview.title || 'Untitled'}</p>
-              <p className="text-xs text-gray-400 font-mono truncate mb-4">{preview.url}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">{preview.title || 'Untitled'}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 font-mono truncate mb-4">{preview.url}</p>
 
               <div className="flex gap-2">
                 <button
                   onClick={() => handleCopyUrl(preview.url)}
-                  className="flex-1 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   Copy URL
                 </button>
                 <button
                   onClick={() => handleArchive(preview)}
-                  className="px-4 py-2 border border-red-200 rounded-md text-sm text-red-500 hover:bg-red-50 transition-colors"
+                  className="px-4 py-2 border border-red-200 dark:border-red-900 rounded-md text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
                 >
                   Remove
                 </button>
                 <button
                   onClick={() => setPreview(null)}
-                  className="px-4 py-2 bg-gray-900 text-white rounded-md text-sm hover:bg-gray-700 transition-colors"
+                  className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-md text-sm hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors"
                 >
                   Close
                 </button>

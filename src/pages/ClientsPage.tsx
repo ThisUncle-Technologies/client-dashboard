@@ -136,13 +136,11 @@ export function ClientsPage() {
     }
 
     if (editing) {
-      // Edit: just update the client record
       const { error: dbError } = await supabase.from('clients').update(payload).eq('id', editing.id)
       if (dbError) { setError(dbError.message); setSaving(false); return }
       setModalOpen(false)
       fetchClients()
     } else {
-      // Create: insert client then create login account
       const { error: dbError } = await supabase.from('clients').insert(payload)
       if (dbError) { setError(dbError.message); setSaving(false); return }
 
@@ -175,15 +173,18 @@ export function ClientsPage() {
     setSaving(false)
   }
 
+  const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:border-gray-900 dark:focus:border-gray-400 transition-colors'
+  const selectCls = inputCls + ' '
+
   return (
     <AppLayout title="Clients">
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-gray-500">{clients.length} client{clients.length !== 1 ? 's' : ''}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{clients.length} client{clients.length !== 1 ? 's' : ''}</p>
         <button
           onClick={openNew}
-          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-700 transition-colors"
+          className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-md hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors"
         >
           + New client
         </button>
@@ -191,34 +192,34 @@ export function ClientsPage() {
 
       {/* Table */}
       {loading ? (
-        <p className="text-sm text-gray-400">Loading...</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">Loading...</p>
       ) : clients.length === 0 ? (
-        <div className="flex items-center justify-center h-48 border border-dashed border-gray-200 rounded-lg">
-          <p className="text-sm text-gray-400">No clients yet. Add your first one.</p>
+        <div className="flex items-center justify-center h-48 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
+          <p className="text-sm text-gray-400 dark:text-gray-500">No clients yet. Add your first one.</p>
         </div>
       ) : (
-        <div className="border border-gray-100 rounded-lg overflow-hidden">
+        <div className="border border-gray-100 dark:border-gray-800 rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Name</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Slug</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Email</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Phone</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
+              <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800">
+                <th className="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Name</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Slug</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Email</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Phone</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Status</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
               {clients.map(client => (
-                <tr key={client.id} className="bg-white hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-gray-900">{client.name}</td>
-                  <td className="px-4 py-3 text-gray-400 font-mono text-xs">{client.slug}</td>
-                  <td className="px-4 py-3 text-gray-500">{client.contact_email || '—'}</td>
-                  <td className="px-4 py-3 text-gray-500">{client.contact_phone || '—'}</td>
+                <tr key={client.id} className="bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{client.name}</td>
+                  <td className="px-4 py-3 text-gray-400 dark:text-gray-500 font-mono text-xs">{client.slug}</td>
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{client.contact_email || '—'}</td>
+                  <td className="px-4 py-3 text-gray-500 dark:text-gray-400">{client.contact_phone || '—'}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-block text-[10px] uppercase tracking-widest px-2 py-0.5 rounded ${
-                      client.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-400'
+                      client.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
                     }`}>
                       {client.status}
                     </span>
@@ -227,7 +228,7 @@ export function ClientsPage() {
                     <div className="flex items-center justify-end gap-3">
                       <button
                         onClick={() => openEdit(client)}
-                        className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
+                        className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
                       >
                         Edit
                       </button>
@@ -249,7 +250,7 @@ export function ClientsPage() {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-md mx-4 p-6">
 
             {/* Credentials confirmation */}
             {credentials ? (
@@ -261,23 +262,23 @@ export function ClientsPage() {
                     </svg>
                   </div>
                   <div>
-                    <h2 className="text-base font-semibold text-gray-900">Client created</h2>
-                    <p className="text-xs text-gray-400">Copy the login credentials before closing.</p>
+                    <h2 className="text-base font-semibold text-gray-900 dark:text-white">Client created</h2>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">Copy the login credentials before closing.</p>
                   </div>
                 </div>
 
                 <div className="space-y-3 mb-4">
-                  <div className="px-4 py-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-gray-400 mb-1">Client name</p>
-                    <p className="text-sm font-medium text-gray-900">{credentials.full_name}</p>
+                  <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Client name</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{credentials.full_name}</p>
                   </div>
 
-                  <div className="px-4 py-3 bg-gray-50 rounded-lg flex items-center justify-between gap-3">
+                  <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-xs text-gray-400 mb-1">Login email</p>
-                      <p className="text-sm font-medium text-gray-900 truncate">{credentials.email}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Login email</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{credentials.email}</p>
                     </div>
-                    <button onClick={() => copyField(credentials.email, 'email')} className="shrink-0 text-gray-400 hover:text-gray-900 transition-colors">
+                    <button onClick={() => copyField(credentials.email, 'email')} className="shrink-0 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                       {copiedEmail
                         ? <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                         : <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
@@ -285,12 +286,12 @@ export function ClientsPage() {
                     </button>
                   </div>
 
-                  <div className="px-4 py-3 bg-gray-50 rounded-lg flex items-center justify-between gap-3">
+                  <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-xs text-gray-400 mb-1">Password</p>
-                      <p className="text-sm font-mono font-medium text-gray-900 truncate">{credentials.password}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Password</p>
+                      <p className="text-sm font-mono font-medium text-gray-900 dark:text-white truncate">{credentials.password}</p>
                     </div>
-                    <button onClick={() => copyField(credentials.password, 'password')} className="shrink-0 text-gray-400 hover:text-gray-900 transition-colors">
+                    <button onClick={() => copyField(credentials.password, 'password')} className="shrink-0 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                       {copiedPassword
                         ? <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                         : <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 002 2z" /></svg>
@@ -299,77 +300,77 @@ export function ClientsPage() {
                   </div>
                 </div>
 
-                <p className="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-md mb-4">
+                <p className="text-xs text-amber-600 bg-amber-50 dark:bg-amber-950 px-3 py-2 rounded-md mb-4">
                   This password cannot be retrieved after you close this window.
                 </p>
 
                 <button
                   onClick={() => setModalOpen(false)}
-                  className="w-full py-2 bg-gray-900 text-white rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
+                  className="w-full py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-md text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors"
                 >
                   Done
                 </button>
               </>
             ) : (
               <>
-                <h2 className="text-base font-semibold text-gray-900 mb-5">
+                <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-5">
                   {editing ? 'Edit client' : 'New client'}
                 </h2>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={e => handleNameChange(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-900 transition-colors"
+                      className={inputCls}
                       placeholder="Gibeon Builders"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
                     <input
                       type="text"
                       value={form.slug}
                       onChange={e => setForm(f => ({ ...f, slug: slugify(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm font-mono focus:outline-none focus:border-gray-900 transition-colors"
+                      className={inputCls + ' font-mono'}
                       placeholder="gibeon-builders"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Contact email
-                      {!editing && <span className="text-gray-400 font-normal"> — used as login email</span>}
+                      {!editing && <span className="text-gray-400 dark:text-gray-500 font-normal"> — used as login email</span>}
                     </label>
                     <input
                       type="email"
                       value={form.contact_email}
                       onChange={e => setForm(f => ({ ...f, contact_email: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-900 transition-colors"
+                      className={inputCls}
                       placeholder="client@example.com"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Contact phone</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact phone</label>
                     <input
                       type="tel"
                       value={form.contact_phone}
                       onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-900 transition-colors"
+                      className={inputCls}
                       placeholder="+255 700 000 000"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
                     <select
                       value={form.status}
                       onChange={e => setForm(f => ({ ...f, status: e.target.value as 'active' | 'inactive' }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-900 transition-colors bg-white"
+                      className={selectCls}
                     >
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
@@ -377,7 +378,7 @@ export function ClientsPage() {
                   </div>
 
                   {!editing && (
-                    <p className="text-xs text-gray-400 bg-gray-50 px-3 py-2 rounded-md">
+                    <p className="text-xs text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-md">
                       A login account will be created automatically using the contact email above.
                     </p>
                   )}
@@ -388,14 +389,14 @@ export function ClientsPage() {
                 <div className="flex gap-3 mt-6">
                   <button
                     onClick={() => setModalOpen(false)}
-                    className="flex-1 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                    className="flex-1 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex-1 py-2 bg-gray-900 text-white rounded-md text-sm font-medium hover:bg-gray-700 disabled:opacity-50 transition-colors"
+                    className="flex-1 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-md text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 disabled:opacity-50 transition-colors"
                   >
                     {saving ? 'Creating...' : editing ? 'Save changes' : 'Create client'}
                   </button>
@@ -409,18 +410,18 @@ export function ClientsPage() {
       {/* Delete confirmation */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
-            <h2 className="text-base font-semibold text-gray-900 mb-2">Delete client?</h2>
-            <p className="text-sm text-gray-500 mb-1">
-              This will permanently delete <span className="font-medium text-gray-900">{deleteTarget.name}</span> and all their associated sites and gallery data.
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Delete client?</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+              This will permanently delete <span className="font-medium text-gray-900 dark:text-white">{deleteTarget.name}</span> and all their associated sites and gallery data.
             </p>
-            <p className="text-sm text-amber-600 bg-amber-50 px-3 py-2 rounded-md mb-6 mt-3">
+            <p className="text-sm text-amber-600 bg-amber-50 dark:bg-amber-950 px-3 py-2 rounded-md mb-6 mt-3">
               The login account for {deleteTarget.contact_email} will not be deleted automatically. Remove it from Users if needed.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                className="flex-1 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Cancel
               </button>

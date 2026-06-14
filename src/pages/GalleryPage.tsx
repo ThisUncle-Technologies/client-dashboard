@@ -53,18 +53,15 @@ export function GalleryPage() {
   const [sections, setSections] = useState<Section[]>([])
   const [loading, setLoading] = useState(false)
 
-  // section modal
   const [sectionModal, setSectionModal] = useState<'create' | 'edit' | null>(null)
   const [editingSection, setEditingSection] = useState<Section | null>(null)
   const [sectionForm, setSectionForm] = useState(emptySection)
   const [sectionError, setSectionError] = useState('')
   const [savingSection, setSavingSection] = useState(false)
 
-  // delete modal
   const [deleteTarget, setDeleteTarget] = useState<Section | null>(null)
   const [deleting, setDeleting] = useState(false)
 
-  // items panel
   const [activeSection, setActiveSection] = useState<Section | null>(null)
   const [items, setItems] = useState<GalleryItem[]>([])
   const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([])
@@ -203,6 +200,8 @@ export function GalleryPage() {
 
   const addedIds = new Set(items.map(i => i.media_asset_id))
 
+  const inputCls = 'w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:border-gray-900 dark:focus:border-gray-400'
+
   return (
     <AppLayout title="Gallery">
 
@@ -215,8 +214,8 @@ export function GalleryPage() {
               onClick={() => setSelectedSite(s.id)}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
                 selectedSite === s.id
-                  ? 'bg-gray-900 text-white border-gray-900'
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-900'
+                  ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white'
+                  : 'bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               {s.name}
@@ -226,7 +225,7 @@ export function GalleryPage() {
         <button
           onClick={openCreate}
           disabled={!selectedSite}
-          className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-700 disabled:opacity-50 transition-colors"
+          className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium rounded-md hover:bg-gray-700 dark:hover:bg-gray-100 disabled:opacity-50 transition-colors"
         >
           + New Section
         </button>
@@ -238,11 +237,11 @@ export function GalleryPage() {
         {/* Sections list */}
         <div className="w-72 shrink-0">
           {loading ? (
-            <p className="text-sm text-gray-400">Loading...</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Loading...</p>
           ) : sections.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-48 border border-dashed border-gray-200 rounded-lg gap-2">
-              <p className="text-sm text-gray-400">No sections yet.</p>
-              <button onClick={openCreate} className="text-sm text-gray-900 underline">Create one</button>
+            <div className="flex flex-col items-center justify-center h-48 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg gap-2">
+              <p className="text-sm text-gray-400 dark:text-gray-500">No sections yet.</p>
+              <button onClick={openCreate} className="text-sm text-gray-900 dark:text-white underline">Create one</button>
             </div>
           ) : (
             <ul className="space-y-1.5">
@@ -254,22 +253,21 @@ export function GalleryPage() {
                       onClick={() => setActiveSection(s)}
                       className={`w-full text-left px-3 py-2.5 pr-16 rounded-lg border transition-colors ${
                         isActive
-                          ? 'border-gray-900 bg-gray-900 text-white'
-                          : 'border-gray-100 bg-white hover:border-gray-200 text-gray-700'
+                          ? 'border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                          : 'border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-200 dark:hover:border-gray-700 text-gray-700 dark:text-gray-300'
                       }`}
                     >
                       <p className="text-sm font-medium truncate">{s.title}</p>
-                      <p className={`text-xs mt-0.5 ${isActive ? 'text-gray-300' : 'text-gray-400'}`}>
+                      <p className={`text-xs mt-0.5 ${isActive ? 'text-gray-300 dark:text-gray-600' : 'text-gray-400 dark:text-gray-500'}`}>
                         {s.layout_type} · <span className={s.status === 'published' && !isActive ? 'text-green-500' : ''}>{s.status}</span>
                       </p>
                     </button>
 
-                    {/* Action icons — inside card, top-right, visible on hover */}
                     <div className="absolute top-1/2 -translate-y-1/2 right-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={e => { e.stopPropagation(); openEdit(s) }}
                         title="Edit"
-                        className={`p-1.5 rounded-md transition-colors ${isActive ? 'text-gray-300 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-100'}`}
+                        className={`p-1.5 rounded-md transition-colors ${isActive ? 'text-gray-300 dark:text-gray-600 hover:text-white dark:hover:text-gray-900 hover:bg-white/10 dark:hover:bg-black/10' : 'text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                       >
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-1.414.586H8v-2.414a2 2 0 01.586-1.414z" />
@@ -279,7 +277,7 @@ export function GalleryPage() {
                         <button
                           onClick={e => { e.stopPropagation(); setDeleteTarget(s) }}
                           title="Delete"
-                          className={`p-1.5 rounded-md transition-colors ${isActive ? 'text-red-300 hover:text-red-200 hover:bg-white/10' : 'text-red-400 hover:text-red-600 hover:bg-red-50'}`}
+                          className={`p-1.5 rounded-md transition-colors ${isActive ? 'text-red-300 hover:text-red-200 hover:bg-white/10' : 'text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950'}`}
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0a1 1 0 011-1h4a1 1 0 011 1m-7 0H5m14 0h-2" />
@@ -295,37 +293,37 @@ export function GalleryPage() {
         </div>
 
         {/* Items panel */}
-        <div className="flex-1 border border-gray-100 rounded-xl p-5">
+        <div className="flex-1 border border-gray-100 dark:border-gray-800 rounded-xl p-5">
           {!activeSection ? (
             <div className="flex items-center justify-center h-full">
-              <p className="text-sm text-gray-400">Select a section to manage its items</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">Select a section to manage its items</p>
             </div>
           ) : (
             <>
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">{activeSection.title}</h3>
-                  <p className="text-xs text-gray-400">{items.length} item{items.length !== 1 ? 's' : ''}</p>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{activeSection.title}</h3>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">{items.length} item{items.length !== 1 ? 's' : ''}</p>
                 </div>
                 <button
                   onClick={() => setMediaPickerOpen(true)}
-                  className="px-3 py-1.5 border border-gray-200 text-sm text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  className="px-3 py-1.5 border border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   + Add Media
                 </button>
               </div>
 
               {itemsLoading ? (
-                <p className="text-sm text-gray-400">Loading...</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500">Loading...</p>
               ) : items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-40 border border-dashed border-gray-200 rounded-lg gap-2">
-                  <p className="text-sm text-gray-400">No items yet.</p>
-                  <button onClick={() => setMediaPickerOpen(true)} className="text-sm text-gray-900 underline">Add from media library</button>
+                <div className="flex flex-col items-center justify-center h-40 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg gap-2">
+                  <p className="text-sm text-gray-400 dark:text-gray-500">No items yet.</p>
+                  <button onClick={() => setMediaPickerOpen(true)} className="text-sm text-gray-900 dark:text-white underline">Add from media library</button>
                 </div>
               ) : (
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {items.map(item => (
-                    <div key={item.id} className="group relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+                    <div key={item.id} className="group relative aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
                       {item.media_assets?.type === 'image' ? (
                         <img src={item.media_assets.url} alt={item.media_assets.title || ''} className="w-full h-full object-cover" />
                       ) : (
@@ -353,13 +351,13 @@ export function GalleryPage() {
       {/* Section modal */}
       {sectionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setSectionModal(null)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6" onClick={e => e.stopPropagation()}>
-            <h2 className="text-base font-semibold text-gray-900 mb-4">
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-md mx-4 p-6" onClick={e => e.stopPropagation()}>
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-4">
               {sectionModal === 'create' ? 'New Section' : 'Edit Section'}
             </h2>
             <form onSubmit={handleSectionSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Title</label>
                 <input
                   type="text"
                   value={sectionForm.title}
@@ -369,36 +367,36 @@ export function GalleryPage() {
                     slug: f.slug || slugify(e.target.value),
                   }))}
                   placeholder="e.g. Residential Projects"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-900"
+                  className={inputCls}
                   autoFocus
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Slug</label>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Slug</label>
                 <input
                   type="text"
                   value={sectionForm.slug}
                   onChange={e => setSectionForm(f => ({ ...f, slug: e.target.value }))}
                   placeholder="residential-projects"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm font-mono focus:outline-none focus:border-gray-900"
+                  className={inputCls + ' font-mono'}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Description</label>
                 <textarea
                   value={sectionForm.description}
                   onChange={e => setSectionForm(f => ({ ...f, description: e.target.value }))}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-900 resize-none"
+                  className={inputCls + ' resize-none'}
                 />
               </div>
               <div className="flex gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Layout</label>
+                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Layout</label>
                   <select
                     value={sectionForm.layout_type}
                     onChange={e => setSectionForm(f => ({ ...f, layout_type: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:border-gray-900"
+                    className={inputCls}
                   >
                     <option value="grid">Grid</option>
                     <option value="masonry">Masonry</option>
@@ -406,11 +404,11 @@ export function GalleryPage() {
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Status</label>
+                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Status</label>
                   <select
                     value={sectionForm.status}
                     onChange={e => setSectionForm(f => ({ ...f, status: e.target.value as 'published' | 'draft' }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm bg-white focus:outline-none focus:border-gray-900"
+                    className={inputCls}
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -419,10 +417,10 @@ export function GalleryPage() {
               </div>
               {sectionError && <p className="text-sm text-red-500">{sectionError}</p>}
               <div className="flex gap-3 pt-1">
-                <button type="button" onClick={() => setSectionModal(null)} className="flex-1 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50">
+                <button type="button" onClick={() => setSectionModal(null)} className="flex-1 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={savingSection} className="flex-1 py-2 bg-gray-900 text-white rounded-md text-sm font-medium hover:bg-gray-700 disabled:opacity-50">
+                <button type="submit" disabled={savingSection} className="flex-1 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-md text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-100 disabled:opacity-50 transition-colors">
                   {savingSection ? 'Saving…' : 'Save'}
                 </button>
               </div>
@@ -434,14 +432,14 @@ export function GalleryPage() {
       {/* Delete modal */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setDeleteTarget(null)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6" onClick={e => e.stopPropagation()}>
-            <h2 className="text-base font-semibold text-gray-900 mb-2">Delete section?</h2>
-            <p className="text-sm text-gray-500 mb-5">
-              <span className="font-medium text-gray-800">{deleteTarget.title}</span> and all its items will be permanently deleted.
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-sm mx-4 p-6" onClick={e => e.stopPropagation()}>
+            <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Delete section?</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+              <span className="font-medium text-gray-800 dark:text-gray-200">{deleteTarget.title}</span> and all its items will be permanently deleted.
             </p>
             <div className="flex gap-3">
-              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50">Cancel</button>
-              <button onClick={handleDelete} disabled={deleting} className="flex-1 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-50">
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancel</button>
+              <button onClick={handleDelete} disabled={deleting} className="flex-1 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-50 transition-colors">
                 {deleting ? 'Deleting…' : 'Delete'}
               </button>
             </div>
@@ -452,17 +450,17 @@ export function GalleryPage() {
       {/* Media picker */}
       {mediaPickerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setMediaPickerOpen(false)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6 max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6 max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-semibold text-gray-900">Add from Media Library</h2>
-              <button onClick={() => setMediaPickerOpen(false)} className="text-gray-400 hover:text-gray-700">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white">Add from Media Library</h2>
+              <button onClick={() => setMediaPickerOpen(false)} className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             {mediaAssets.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-10">No media uploaded for this site yet.</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-10">No media uploaded for this site yet.</p>
             ) : (
               <div className="overflow-y-auto">
                 <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
@@ -474,7 +472,7 @@ export function GalleryPage() {
                         onClick={() => { if (!added) { addItem(asset); setMediaPickerOpen(false) } }}
                         disabled={added}
                         className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                          added ? 'border-green-400 opacity-50 cursor-default' : 'border-transparent hover:border-gray-900'
+                          added ? 'border-green-400 opacity-50 cursor-default' : 'border-transparent hover:border-gray-900 dark:hover:border-white'
                         }`}
                       >
                         {asset.type === 'image' ? (
