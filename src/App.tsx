@@ -5,6 +5,7 @@ import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { ClientsPage } from './pages/ClientsPage'
+import { SitesPage } from './pages/SitesPage'
 import './index.css'
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
           />
           <Route
             path="/sites"
-            element={<ProtectedRoute><PlaceholderPage title="Sites" /></ProtectedRoute>}
+            element={<ProtectedRoute><SitesPage /></ProtectedRoute>}
           />
           <Route
             path="/media"
