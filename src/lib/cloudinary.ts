@@ -51,11 +51,12 @@ export async function uploadToCloudinary(
           type: data.resource_type === 'video' ? 'video' : 'image',
         })
       } else {
-        reject(new Error('Upload failed'))
+        const body = xhr.responseText
+        reject(new Error(`Cloudinary error ${xhr.status}: ${body}`))
       }
     }
 
-    xhr.onerror = () => reject(new Error('Upload failed'))
+    xhr.onerror = () => reject(new Error('Network error during upload'))
     xhr.send(formData)
   })
 }

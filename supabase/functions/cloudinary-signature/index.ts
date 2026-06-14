@@ -1,10 +1,16 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { crypto } from 'https://deno.land/std@0.177.0/crypto/mod.ts'
-import { encodeHex } from 'https://deno.land/std@0.177.0/encoding/hex.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+async function sha1(message: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(message)
+  const hashBuffer = await crypto.subtle.digest('SHA-1', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
 Deno.serve(async (req) => {
@@ -13,7 +19,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Verify authenticated user
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -38,18 +43,11 @@ Deno.serve(async (req) => {
     const apiSecret = Deno.env.get('CLOUDINARY_API_SECRET')!
     const timestamp = Math.round(Date.now() / 1000)
 
-    // Build the string to sign
-    const params = folder
+    const paramString = folder
       ? `folder=${folder}&timestamp=${timestamp}`
       : `timestamp=${timestamp}`
 
-    const stringToSign = `${params}${apiSecret}`
-
-    // SHA-1 signature
-    const encoder = new TextEncoder()
-    const data = encoder.encode(stringToSign)
-    const hashBuffer = await crypto.subtle.digest('SHA-1', data)
-    const signature = encodeHex(new Uint8Array(hashBuffer))
+    const signature = await sha1(`${paramString}${apiSecret}`)
 
     return new Response(JSON.stringify({ signature, timestamp }), {
       status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
