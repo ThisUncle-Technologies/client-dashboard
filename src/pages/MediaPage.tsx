@@ -88,8 +88,8 @@ export function MediaPage() {
       })
 
       await fetchAssets(selectedSite)
-    } catch {
-      setUploadError('Upload failed. Please try again.')
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : String(err))
     }
 
     setUploading(false)
