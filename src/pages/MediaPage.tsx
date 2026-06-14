@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { AppLayout } from '../components/layout/AppLayout'
 import { supabase } from '../lib/supabase'
 import { uploadToCloudinary } from '../lib/cloudinary'
-import { useAuth } from '../context/AuthContext'
-
 interface Site {
   id: string
   name: string
@@ -23,9 +21,6 @@ interface MediaAsset {
 }
 
 export function MediaPage() {
-  const { profile } = useAuth()
-  const isAdmin = profile?.role === 'admin'
-
   const [sites, setSites] = useState<Site[]>([])
   const [selectedSite, setSelectedSite] = useState<string>('')
   const [assets, setAssets] = useState<MediaAsset[]>([])
