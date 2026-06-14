@@ -21,10 +21,10 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Use service role to bypass RLS — this is a read-only public endpoint
+    // service_role bypasses RLS; falls back to custom secret if auto-inject unavailable
     const admin = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SERVICE_ROLE_KEY')!,
+      (Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SERVICE_ROLE_KEY'))!,
     )
 
     // Resolve site
