@@ -4,12 +4,12 @@ import { ThemeProvider } from './context/ThemeContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
 import { ClientsPage } from './pages/ClientsPage'
 import { SitesPage } from './pages/SitesPage'
 import { MediaPage } from './pages/MediaPage'
 import { UsersPage } from './pages/UsersPage'
 import { GalleryPage } from './pages/GalleryPage'
+import { AnalyticsPage } from './pages/AnalyticsPage'
 import './index.css'
 
 function App() {
@@ -45,7 +45,7 @@ function App() {
           />
           <Route
             path="/analytics"
-            element={<ProtectedRoute><PlaceholderPage title="Analytics" /></ProtectedRoute>}
+            element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>}
           />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

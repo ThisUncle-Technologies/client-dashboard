@@ -11,6 +11,7 @@ interface Site {
   status: 'active' | 'inactive' | 'maintenance'
   integration_type: 'static' | 'dynamic'
   client_id: string
+  umami_share_url: string | null
   clients: { name: string } | null
 }
 
@@ -26,11 +27,13 @@ interface FormState {
   client_id: string
   status: 'active' | 'inactive' | 'maintenance'
   integration_type: 'static' | 'dynamic'
+  umami_share_url: string
 }
 
 const empty: FormState = {
   name: '', slug: '', domain: '', client_id: '',
   status: 'active', integration_type: 'static',
+  umami_share_url: '',
 }
 
 function slugify(value: string) {
@@ -60,7 +63,7 @@ export function SitesPage() {
     setLoading(true)
     const { data } = await supabase
       .from('sites')
-      .select('id, name, slug, domain, status, integration_type, client_id, clients(name)')
+      .select('id, name, slug, domain, status, integration_type, client_id, umami_share_url, clients(name)')
       .order('name')
     setSites((data as unknown as Site[]) ?? [])
     setLoading(false)
@@ -92,6 +95,7 @@ export function SitesPage() {
       client_id: site.client_id,
       status: site.status,
       integration_type: site.integration_type,
+      umami_share_url: site.umami_share_url ?? '',
     })
     setError(null)
     setModalOpen(true)
@@ -120,6 +124,7 @@ export function SitesPage() {
       client_id: form.client_id,
       status: form.status,
       integration_type: form.integration_type,
+      umami_share_url: form.umami_share_url.trim() || null,
     }
 
     const { error: dbError } = editing
@@ -264,6 +269,17 @@ export function SitesPage() {
                   onChange={e => setForm(f => ({ ...f, domain: e.target.value }))}
                   className={inputCls}
                   placeholder="gibeonbuilders.co.tz"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Umami share URL</label>
+                <input
+                  type="url"
+                  value={form.umami_share_url}
+                  onChange={e => setForm(f => ({ ...f, umami_share_url: e.target.value }))}
+                  className={inputCls}
+                  placeholder="https://cloud.umami.is/share/..."
                 />
               </div>
 
