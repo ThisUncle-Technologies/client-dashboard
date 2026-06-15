@@ -12,8 +12,8 @@ export function ProtectedRoute({ children, requireAdmin = false }: Props) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="text-sm text-gray-400">Loading...</span>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950">
+        <span className="text-sm text-gray-400 dark:text-gray-500">Loading...</span>
       </div>
     )
   }

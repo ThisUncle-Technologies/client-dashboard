@@ -107,7 +107,9 @@ export function AnalyticsPage() {
               </svg>
               <p className="text-sm text-gray-500 dark:text-gray-400">No analytics connected for {selectedSite?.name}.</p>
               {isAdmin && (
-                <p className="text-xs text-gray-400 dark:text-gray-500">Add the Umami share URL in Sites → Edit.</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  Add a Umami share URL in Sites → Edit. Note: Umami free tier supports 1 website.
+                </p>
               )}
             </div>
           )}
