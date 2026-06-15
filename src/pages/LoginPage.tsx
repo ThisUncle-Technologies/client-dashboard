@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const BG_IMAGES = [
-  { src: '/simba1.jpg', alt: 'Lions resting on the Serengeti at sunset' },
-  { src: '/tembo1.jpg', alt: 'Elephant walking through misty savanna plains' },
-  { src: '/tiger.jpg', alt: 'Tiger close-up against blue sky' },
+  { src: '/login1.jpg', alt: 'Giraffe at golden sunset in Tarangire, Tanzania' },
+  { src: '/login2.jpg', alt: 'Zanzibar beach with turquoise Indian Ocean waters' },
+  { src: '/login3.jpg', alt: 'Elephants walking in Ngorongoro Crater, Tanzania' },
 ]
 
 export function LoginPage() {
