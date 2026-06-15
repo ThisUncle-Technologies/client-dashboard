@@ -3,10 +3,17 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+const BG_IMAGES = [
+  { src: '/simba1.jpg', alt: 'Lions resting on the Serengeti at sunset' },
+  { src: '/tembo1.jpg', alt: 'Elephant walking through misty savanna plains' },
+  { src: '/tiger.jpg', alt: 'Tiger close-up against blue sky' },
+]
+
 export function LoginPage() {
   const { signIn, session } = useAuth()
   const navigate = useNavigate()
 
+  const [bg] = useState(() => BG_IMAGES[Math.floor(Math.random() * BG_IMAGES.length)])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -37,9 +44,9 @@ export function LoginPage() {
       {/* Left — image panel */}
       <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 relative overflow-hidden">
         <img
-          src="/kili.jpeg"
-          alt="Mount Kilimanjaro at sunrise"
-          className="absolute inset-0 w-full h-full object-cover"
+          src={bg.src}
+          alt={bg.alt}
+          className="absolute inset-0 w-full h-full object-cover object-center"
         />
         {/* Subtle dark gradient at bottom for the caption */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
